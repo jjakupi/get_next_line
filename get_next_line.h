@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 13:26:38 by jjakupi           #+#    #+#             */
-/*   Updated: 2024/10/31 16:10:56 by jjakupi          ###   ########.fr       */
+/*   Updated: 2024/10/31 18:34:34 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
-# include <stdlib.h>
-# include <sys/types.h>
 
 char	*get_next_line(int fd);
 char	*ft_strjoin(const char *s1, const char *s2);
