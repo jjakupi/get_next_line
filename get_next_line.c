@@ -6,13 +6,13 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 15:09:44 by jjakupi           #+#    #+#             */
-/*   Updated: 2024/10/30 18:01:51 by jjakupi          ###   ########.fr       */
+/*   Updated: 2024/10/31 18:19:00 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*left_and_buffer(int fd, char *left_overs, char *buffer)
+static char	*join_leftovers_and_buffer(int fd, char *left_overs, char *buffer)
 {
 	int		read_line;
 	char	*temp;
@@ -41,50 +41,50 @@ static char	*left_and_buffer(int fd, char *left_overs, char *buffer)
 	return (left_overs);
 }
 
-static char	*ex_line_from_left(char *line_b)
+static char	*extract_line_from_leftovers(char *combined_da)
 {
 	ssize_t		i;
-	char		*left_overs;
+	char		*remaining_da;
 
 	i = 0;
-	if (!line_b[i])
+	if (!combined_da[i])
 		return (NULL);
-	while (line_b[i] != '\n' && line_b[i] != '\0')
+	while (combined_da[i] != '\n' && combined_da[i] != '\0')
 		i++;
-	if (line_b[i] == 0 || line_b[1] == 0)
+	if (combined_da[i] == 0 || combined_da[1] == 0)
 		return (NULL);
-	left_overs = ft_substr(line_b, i + 1, ft_strlen(line_b) - i - 1);
-	if (*left_overs == 0)
+	remaining_da = ft_substr(combined_da, i + 1, ft_strlen(combined_da) - i);
+	if (*remaining_da == 0)
 	{
-		free(left_overs);
-		left_overs = NULL;
+		free(remaining_da);
+		remaining_da = NULL;
 	}
-	line_b[i + 1] = 0;
-	return (left_overs);
+	combined_da[i + 1] = 0;
+	return (remaining_da);
 }
 
 char	*get_next_line(int fd)
 {
-	static char			*left_overs;
-	char				*line;	
+	static char			*remaining_da;
+	char				*complete_line;
 	char				*buffer;
 
 	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free(left_overs);
+		free(remaining_da);
 		free(buffer);
-		left_overs = NULL;
+		remaining_da = NULL;
 		buffer = NULL;
 		return (NULL);
 	}
 	if (!buffer)
 		return (NULL);
-	line = left_and_buffer(fd, left_overs, buffer);
+	complete_line = join_leftovers_and_buffer(fd, remaining_da, buffer);
 	free(buffer);
 	buffer = (NULL);
-	if (!line)
+	if (!complete_line)
 		return (NULL);
-	left_overs = ex_line_from_left(line);
-	return (line);
+	remaining_da = extract_line_from_leftovers(complete_line);
+	return (complete_line);
 }
